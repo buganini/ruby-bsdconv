@@ -1,4 +1,4 @@
 require 'bsdconv'
 
-conv = bsdconv.new('utf-8,ascii:upper:utf-8,ascii')
-puts conv.conv('test test')
+c = Bsdconv.new('utf-8,ascii:upper:utf-8,ascii')
+puts c.conv('test test')
