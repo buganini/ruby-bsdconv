@@ -1,4 +1,12 @@
+#!/usr/bin/env ruby
+
 require 'bsdconv'
 
-c = Bsdconv.new('utf-8,ascii:upper:utf-8,ascii')
-puts c.conv('test test')
+c = Bsdconv.new(ARGV[0])
+
+c.init
+while $stdin.gets
+	puts c.conv_chunk($_)
+end
+puts c.conv_chunk_last('')
+
