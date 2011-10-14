@@ -24,6 +24,8 @@ void Init_bsdconv(){
 
 static VALUE m_new(VALUE class, VALUE conversion){
 	struct bsdconv_instance *ins;
+	if(TYPE(conversion)!=T_STRING)
+		return Qnil;
 	ins=bsdconv_create(RSTRING(conversion)->ptr);
 	if(ins==NULL)
 		return Qnil;
