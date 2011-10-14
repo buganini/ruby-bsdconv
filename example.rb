@@ -5,7 +5,7 @@ require 'bsdconv'
 c = Bsdconv.new(ARGV[0])
 
 if c.nil?
-	abort('conversion error')
+	abort(bsdconv_error)
 end
 
 c.init

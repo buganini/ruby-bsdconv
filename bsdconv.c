@@ -8,6 +8,7 @@ static VALUE m_init(VALUE);
 static VALUE m_conv_chunk(VALUE, VALUE);
 static VALUE m_conv_chunk_last(VALUE, VALUE);
 static VALUE m_info(VALUE);
+static VALUE f_error();
 
 void Init_bsdconv(){
 	VALUE Bsdconv = rb_define_class("Bsdconv", rb_cObject);
@@ -17,6 +18,7 @@ void Init_bsdconv(){
 	rb_define_method(Bsdconv, "conv_chunk", m_conv_chunk, 1);
 	rb_define_method(Bsdconv, "conv_chunk_last", m_conv_chunk_last, 1);
 	rb_define_method(Bsdconv, "info", m_info, 0);
+	rb_define_global_function("bsdconv_error", f_error, 0);
 	rb_define_const(Bsdconv, "FROM", INT2NUM(FROM));
 	rb_define_const(Bsdconv, "INTER", INT2NUM(INTER));
 	rb_define_const(Bsdconv, "TO", INT2NUM(TO));
@@ -91,5 +93,13 @@ static VALUE m_info(VALUE self){
 	rb_hash_aset(ret, rb_str_new2("ierr"), INT2FIX(ins->ierr));
 	rb_hash_aset(ret, rb_str_new2("oerr"), INT2FIX(ins->oerr));
 	rb_hash_aset(ret, rb_str_new2("score"), INT2FIX(ins->score));
+	return ret;
+}
+
+static VALUE f_error(){
+	VALUE ret;
+	char *s=bsdconv_error();
+	ret=rb_str_new2(s);
+	free(s);
 	return ret;
 }
