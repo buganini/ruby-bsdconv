@@ -17,6 +17,9 @@ void Init_bsdconv(){
 	rb_define_method(Bsdconv, "conv_chunk", m_conv_chunk, 1);
 	rb_define_method(Bsdconv, "conv_chunk_last", m_conv_chunk_last, 1);
 	rb_define_method(Bsdconv, "info", m_info, 0);
+	rb_define_const(Bsdconv, "FROM", INT2NUM(FROM));
+	rb_define_const(Bsdconv, "INTER", INT2NUM(INTER));
+	rb_define_const(Bsdconv, "TO", INT2NUM(TO));
 }
 
 static VALUE m_new(VALUE class, VALUE conversion){
