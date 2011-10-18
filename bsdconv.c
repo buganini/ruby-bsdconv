@@ -5,6 +5,10 @@
 
 void Init_bsdconv();
 static VALUE m_new(VALUE, VALUE);
+static VALUE m_insert_phase(VALUE, VALUE, VALUE, VALUE);
+static VALUE m_insert_codec(VALUE, VALUE, VALUE, VALUE);
+static VALUE m_replace_phase(VALUE, VALUE, VALUE, VALUE);
+static VALUE m_replace_codec(VALUE, VALUE, VALUE, VALUE);
 static VALUE m_conv(VALUE, VALUE);
 static VALUE m_init(VALUE);
 static VALUE m_conv_chunk(VALUE, VALUE);
@@ -17,6 +21,10 @@ static VALUE m_error(VALUE);
 void Init_bsdconv(){
 	VALUE Bsdconv = rb_define_class("Bsdconv", rb_cObject);
 	rb_define_singleton_method(Bsdconv, "new", m_new, 1);
+	rb_define_method(Bsdconv, "insert_phase", m_insert_phase, 3);
+	rb_define_method(Bsdconv, "insert_codec", m_insert_codec, 3);
+	rb_define_method(Bsdconv, "replace_phase", m_replace_phase, 3);
+	rb_define_method(Bsdconv, "replace_codec", m_replace_codec, 3);
 	rb_define_method(Bsdconv, "conv", m_conv, 1);
 	rb_define_method(Bsdconv, "init", m_init, 0);
 	rb_define_method(Bsdconv, "conv_chunk", m_conv_chunk, 1);
@@ -37,6 +45,30 @@ static VALUE m_new(VALUE class, VALUE conversion){
 	else
 		ins=bsdconv_create(RSTRING(conversion)->ptr);
 	return Data_Wrap_Struct(class, 0, bsdconv_destroy, ins);
+}
+
+static VALUE m_insert_phase(VALUE self, VALUE conversion, VALUE phase_type, VALUE phasen){
+	struct bsdconv_instance *ins;
+	Data_Get_Struct(self, struct bsdconv_instance, ins);
+	return INT2NUM(bsdconv_insert_phase(ins, RSTRING(conversion)->ptr, NUM2INT(phase_type), NUM2INT(phasen)));
+}
+
+static VALUE m_insert_codec(VALUE self, VALUE conversion, VALUE phasen, VALUE codecn){
+	struct bsdconv_instance *ins;
+	Data_Get_Struct(self, struct bsdconv_instance, ins);
+	return INT2NUM(bsdconv_insert_phase(ins, RSTRING(conversion)->ptr, NUM2INT(phasen), NUM2INT(codecn)));
+}
+
+static VALUE m_replace_phase(VALUE self, VALUE conversion, VALUE phase_type, VALUE phasen){
+	struct bsdconv_instance *ins;
+	Data_Get_Struct(self, struct bsdconv_instance, ins);
+	return INT2NUM(bsdconv_insert_phase(ins, RSTRING(conversion)->ptr, NUM2INT(phase_type), NUM2INT(phasen)));
+}
+
+static VALUE m_replace_codec(VALUE self, VALUE conversion, VALUE phasen, VALUE codecn){
+	struct bsdconv_instance *ins;
+	Data_Get_Struct(self, struct bsdconv_instance, ins);
+	return INT2NUM(bsdconv_insert_phase(ins, RSTRING(conversion)->ptr, NUM2INT(phasen), NUM2INT(codecn)));
 }
 
 static VALUE m_conv(VALUE self, VALUE str){
