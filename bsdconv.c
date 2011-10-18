@@ -8,7 +8,8 @@ static VALUE m_init(VALUE);
 static VALUE m_conv_chunk(VALUE, VALUE);
 static VALUE m_conv_chunk_last(VALUE, VALUE);
 static VALUE m_info(VALUE);
-static VALUE f_error();
+static VALUE m_nil(VALUE);
+static VALUE m_error(VALUE);
 
 void Init_bsdconv(){
 	VALUE Bsdconv = rb_define_class("Bsdconv", rb_cObject);
@@ -18,7 +19,8 @@ void Init_bsdconv(){
 	rb_define_method(Bsdconv, "conv_chunk", m_conv_chunk, 1);
 	rb_define_method(Bsdconv, "conv_chunk_last", m_conv_chunk_last, 1);
 	rb_define_method(Bsdconv, "info", m_info, 0);
-	rb_define_global_function("bsdconv_error", f_error, 0);
+	rb_define_method(Bsdconv, "nil?", m_nil, 0);
+	rb_define_method(Bsdconv, "error", m_error, 0);
 	rb_define_const(Bsdconv, "FROM", INT2NUM(FROM));
 	rb_define_const(Bsdconv, "INTER", INT2NUM(INTER));
 	rb_define_const(Bsdconv, "TO", INT2NUM(TO));
@@ -27,10 +29,9 @@ void Init_bsdconv(){
 static VALUE m_new(VALUE class, VALUE conversion){
 	struct bsdconv_instance *ins;
 	if(TYPE(conversion)!=T_STRING)
-		return Qnil;
-	ins=bsdconv_create(RSTRING(conversion)->ptr);
-	if(ins==NULL)
-		return Qnil;
+		ins=bsdconv_create("");
+	else
+		ins=bsdconv_create(RSTRING(conversion)->ptr);
 	return Data_Wrap_Struct(class, 0, bsdconv_destroy, ins);
 }
 
@@ -96,7 +97,15 @@ static VALUE m_info(VALUE self){
 	return ret;
 }
 
-static VALUE f_error(){
+static VALUE m_nil(VALUE self){
+	struct bsdconv_instance *ins;
+	Data_Get_Struct(self, struct bsdconv_instance, ins);
+	if(ins==NULL)
+		return Qtrue;
+	return Qfalse;
+}
+
+static VALUE m_error(VALUE self){
 	VALUE ret;
 	char *s=bsdconv_error();
 	ret=rb_str_new2(s);

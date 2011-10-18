@@ -5,7 +5,7 @@ require 'bsdconv'
 c = Bsdconv.new(ARGV[0])
 
 if c.nil?
-	abort(bsdconv_error)
+	abort(c.error)
 end
 
 c.init
