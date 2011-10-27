@@ -43,32 +43,32 @@ static VALUE m_new(VALUE class, VALUE conversion){
 	if(TYPE(conversion)!=T_STRING)
 		ins=bsdconv_create("");
 	else
-		ins=bsdconv_create(RSTRING(conversion)->ptr);
+		ins=bsdconv_create(RSTRING_PTR(conversion));
 	return Data_Wrap_Struct(class, 0, bsdconv_destroy, ins);
 }
 
 static VALUE m_insert_phase(VALUE self, VALUE conversion, VALUE phase_type, VALUE phasen){
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	return INT2NUM(bsdconv_insert_phase(ins, RSTRING(conversion)->ptr, NUM2INT(phase_type), NUM2INT(phasen)));
+	return INT2NUM(bsdconv_insert_phase(ins, RSTRING_PTR(conversion), NUM2INT(phase_type), NUM2INT(phasen)));
 }
 
 static VALUE m_insert_codec(VALUE self, VALUE conversion, VALUE phasen, VALUE codecn){
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	return INT2NUM(bsdconv_insert_phase(ins, RSTRING(conversion)->ptr, NUM2INT(phasen), NUM2INT(codecn)));
+	return INT2NUM(bsdconv_insert_phase(ins, RSTRING_PTR(conversion), NUM2INT(phasen), NUM2INT(codecn)));
 }
 
 static VALUE m_replace_phase(VALUE self, VALUE conversion, VALUE phase_type, VALUE phasen){
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	return INT2NUM(bsdconv_insert_phase(ins, RSTRING(conversion)->ptr, NUM2INT(phase_type), NUM2INT(phasen)));
+	return INT2NUM(bsdconv_insert_phase(ins, RSTRING_PTR(conversion), NUM2INT(phase_type), NUM2INT(phasen)));
 }
 
 static VALUE m_replace_codec(VALUE self, VALUE conversion, VALUE phasen, VALUE codecn){
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	return INT2NUM(bsdconv_insert_phase(ins, RSTRING(conversion)->ptr, NUM2INT(phasen), NUM2INT(codecn)));
+	return INT2NUM(bsdconv_insert_phase(ins, RSTRING_PTR(conversion), NUM2INT(phasen), NUM2INT(codecn)));
 }
 
 static VALUE m_conv(VALUE self, VALUE str){
@@ -77,8 +77,8 @@ static VALUE m_conv(VALUE self, VALUE str){
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
 	bsdconv_init(ins);
 	ins->output_mode=BSDCONV_AUTOMALLOC;
-	ins->input.data=RSTRING(str)->ptr;
-	ins->input.len=RSTRING(str)->len;
+	ins->input.data=RSTRING_PTR(str);
+	ins->input.len=RSTRING_LEN(str);
 	ins->input.flags=0;
 	ins->flush=1;
 	bsdconv(ins);
@@ -99,8 +99,8 @@ static VALUE m_conv_chunk(VALUE self, VALUE str){
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
 	ins->output_mode=BSDCONV_AUTOMALLOC;
-	ins->input.data=RSTRING(str)->ptr;
-	ins->input.len=RSTRING(str)->len;
+	ins->input.data=RSTRING_PTR(str);
+	ins->input.len=RSTRING_LEN(str);
 	ins->input.flags=0;
 	bsdconv(ins);
 	ret=rb_str_new(ins->output.data, ins->output.len);
@@ -113,8 +113,8 @@ static VALUE m_conv_chunk_last(VALUE self, VALUE str){
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
 	ins->output_mode=BSDCONV_AUTOMALLOC;
-	ins->input.data=RSTRING(str)->ptr;
-	ins->input.len=RSTRING(str)->len;
+	ins->input.data=RSTRING_PTR(str);
+	ins->input.len=RSTRING_LEN(str);
 	ins->input.flags=1;
 	bsdconv(ins);
 	ret=rb_str_new(ins->output.data, ins->output.len);
@@ -125,8 +125,8 @@ static VALUE m_conv_chunk_last(VALUE self, VALUE str){
 static VALUE m_conv_file(VALUE self, VALUE ifile, VALUE ofile){
 	struct bsdconv_instance *ins;
 	FILE *inf, *otf;
-	char *s1=RSTRING(ifile)->ptr;
-	char *s2=RSTRING(ofile)->ptr;
+	char *s1=RSTRING_PTR(ifile);
+	char *s2=RSTRING_PTR(ofile);
 	char *in;
 	char *tmp;
 	int fd;
