@@ -19,6 +19,8 @@ static VALUE m_nil(VALUE);
 static VALUE m_inspect(VALUE);
 static VALUE m_error(VALUE);
 
+static VALUE f_codecs_list();
+
 void Init_bsdconv(){
 	VALUE Bsdconv = rb_define_class("Bsdconv", rb_cObject);
 	rb_define_singleton_method(Bsdconv, "new", m_new, 1);
@@ -38,6 +40,8 @@ void Init_bsdconv(){
 	rb_define_const(Bsdconv, "FROM", INT2NUM(FROM));
 	rb_define_const(Bsdconv, "INTER", INT2NUM(INTER));
 	rb_define_const(Bsdconv, "TO", INT2NUM(TO));
+
+	rb_define_global_function("bsdconv_codecs_list", f_codecs_list, 0);	
 }
 
 static VALUE m_new(VALUE class, VALUE conversion){
@@ -216,5 +220,27 @@ static VALUE m_error(VALUE self){
 	char *s=bsdconv_error();
 	ret=rb_str_new2(s);
 	free(s);
+	return ret;
+}
+
+static VALUE f_codecs_list(){
+	int i;
+	char **list, **p;
+	VALUE ret;
+	VALUE tmp;
+	char *type[]={"from","inter","to"};
+	ret=rb_hash_new();
+	list=bsdconv_codecs_list();
+	p=list;
+	for(i=0;i<3;++i){
+		tmp=rb_ary_new();
+		while(*p!=NULL){
+			rb_ary_push(tmp, rb_str_new2(*p));
+			free(*p);
+			p+=1;
+		}
+		rb_hash_aset(ret, rb_str_new2(type[i]), tmp);
+		p+=1;
+	}
 	return ret;
 }
