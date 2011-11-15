@@ -16,6 +16,7 @@ static VALUE m_conv_chunk_last(VALUE, VALUE);
 static VALUE m_conv_file(VALUE, VALUE, VALUE);
 static VALUE m_info(VALUE);
 static VALUE m_nil(VALUE);
+static VALUE m_inspect(VALUE);
 static VALUE m_error(VALUE);
 
 void Init_bsdconv(){
@@ -32,6 +33,7 @@ void Init_bsdconv(){
 	rb_define_method(Bsdconv, "conv_file", m_conv_file, 2);
 	rb_define_method(Bsdconv, "info", m_info, 0);
 	rb_define_method(Bsdconv, "nil?", m_nil, 0);
+	rb_define_method(Bsdconv, "inspect", m_inspect, 0);
 	rb_define_method(Bsdconv, "error", m_error, 0);
 	rb_define_const(Bsdconv, "FROM", INT2NUM(FROM));
 	rb_define_const(Bsdconv, "INTER", INT2NUM(INTER));
@@ -189,6 +191,24 @@ static VALUE m_nil(VALUE self){
 	if(ins==NULL)
 		return Qtrue;
 	return Qfalse;
+}
+
+static VALUE m_inspect(VALUE self){
+#define TEMPLATE "Bsdconv.new(\"%s\")"
+	VALUE ret;
+	struct bsdconv_instance *ins;
+	char *s;
+	char *s2;
+	int len=sizeof(TEMPLATE);
+	Data_Get_Struct(self, struct bsdconv_instance, ins);
+	s=bsdconv_pack(ins);
+	len+=strlen(s);
+	s2=malloc(len);
+	sprintf(s2, TEMPLATE, s);
+	free(s);
+	ret=rb_str_new2(s2);
+	free(s2);
+	return ret;
 }
 
 static VALUE m_error(VALUE self){
