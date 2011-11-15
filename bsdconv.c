@@ -19,7 +19,8 @@ static VALUE m_nil(VALUE);
 static VALUE m_inspect(VALUE);
 static VALUE m_error(VALUE);
 
-static VALUE f_codecs_list();
+static VALUE f_codecs_list(VALUE);
+static VALUE f_codec_check(VALUE, VALUE, VALUE);
 
 void Init_bsdconv(){
 	VALUE Bsdconv = rb_define_class("Bsdconv", rb_cObject);
@@ -41,7 +42,8 @@ void Init_bsdconv(){
 	rb_define_const(Bsdconv, "INTER", INT2NUM(INTER));
 	rb_define_const(Bsdconv, "TO", INT2NUM(TO));
 
-	rb_define_global_function("bsdconv_codecs_list", f_codecs_list, 0);	
+	rb_define_global_function("bsdconv_codecs_list", f_codecs_list, 0);
+	rb_define_global_function("bsdconv_codec_check", f_codec_check, 2);
 }
 
 static VALUE m_new(VALUE class, VALUE conversion){
@@ -223,7 +225,7 @@ static VALUE m_error(VALUE self){
 	return ret;
 }
 
-static VALUE f_codecs_list(){
+static VALUE f_codecs_list(VALUE self){
 	int i;
 	char **list, **p;
 	VALUE ret;
@@ -243,4 +245,11 @@ static VALUE f_codecs_list(){
 		p+=1;
 	}
 	return ret;
+}
+
+static VALUE f_codec_check(VALUE self, VALUE phase_type, VALUE codec){
+	if(bsdconv_codec_check(NUM2INT(phase_type), RSTRING_PTR(codec))){
+		return Qtrue;
+	}
+	return Qfalse;
 }
