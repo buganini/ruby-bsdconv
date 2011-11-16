@@ -35,7 +35,6 @@ void Init_bsdconv(){
 	rb_define_method(Bsdconv, "conv_chunk_last", m_conv_chunk_last, 1);
 	rb_define_method(Bsdconv, "conv_file", m_conv_file, 2);
 	rb_define_method(Bsdconv, "info", m_info, 0);
-	rb_define_method(Bsdconv, "nil?", m_nil, 0);
 	rb_define_method(Bsdconv, "inspect", m_inspect, 0);
 
 	rb_define_const(Bsdconv, "FROM", INT2NUM(FROM));
@@ -53,6 +52,8 @@ static VALUE m_new(VALUE class, VALUE conversion){
 		ins=bsdconv_create("");
 	else
 		ins=bsdconv_create(RSTRING_PTR(conversion));
+	if(ins==NULL)
+		return Qnil;
 	return Data_Wrap_Struct(class, 0, bsdconv_destroy, ins);
 }
 
@@ -190,14 +191,6 @@ static VALUE m_info(VALUE self){
 	rb_hash_aset(ret, rb_str_new2("oerr"), INT2FIX(ins->oerr));
 	rb_hash_aset(ret, rb_str_new2("score"), INT2FIX(ins->score));
 	return ret;
-}
-
-static VALUE m_nil(VALUE self){
-	struct bsdconv_instance *ins;
-	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	if(ins==NULL)
-		return Qtrue;
-	return Qfalse;
 }
 
 static VALUE m_inspect(VALUE self){
