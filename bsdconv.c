@@ -189,7 +189,7 @@ static VALUE m_info(VALUE self){
 	ret=rb_hash_new();
 	rb_hash_aset(ret, rb_str_new2("ierr"), INT2FIX(ins->ierr));
 	rb_hash_aset(ret, rb_str_new2("oerr"), INT2FIX(ins->oerr));
-	rb_hash_aset(ret, rb_str_new2("score"), INT2FIX(ins->score));
+	rb_hash_aset(ret, rb_str_new2("score"), DBL2NUM(ins->score));
 	rb_hash_aset(ret, rb_str_new2("full"), INT2FIX(ins->full));
 	rb_hash_aset(ret, rb_str_new2("half"), INT2FIX(ins->half));
 	rb_hash_aset(ret, rb_str_new2("ambi"), INT2FIX(ins->ambi));
