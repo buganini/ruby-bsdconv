@@ -93,7 +93,7 @@ static VALUE m_conv(VALUE self, VALUE str){
 	ins->flush=1;
 	bsdconv(ins);
 	ret=rb_str_new(ins->output.data, ins->output.len);
-	free(ins->output.data);
+	bsdconv_free(ins->output.data);
 	return ret;
 }
 
@@ -114,7 +114,7 @@ static VALUE m_conv_chunk(VALUE self, VALUE str){
 	ins->input.flags=0;
 	bsdconv(ins);
 	ret=rb_str_new(ins->output.data, ins->output.len);
-	free(ins->output.data);
+	bsdconv_free(ins->output.data);
 	return ret;
 }
 
@@ -128,7 +128,7 @@ static VALUE m_conv_chunk_last(VALUE self, VALUE str){
 	ins->input.flags=1;
 	bsdconv(ins);
 	ret=rb_str_new(ins->output.data, ins->output.len);
-	free(ins->output.data);
+	bsdconv_free(ins->output.data);
 	return ret;
 }
 
@@ -161,7 +161,7 @@ static VALUE m_conv_file(VALUE self, VALUE ifile, VALUE ofile){
 
 	bsdconv_init(ins);
 	do{
-		in=malloc(IBUFLEN);
+		in=bsdconv_malloc(IBUFLEN);
 		ins->input.data=in;
 		ins->input.len=fread(in, 1, IBUFLEN, inf);
 		ins->input.flags|=F_FREE;
@@ -208,7 +208,7 @@ static VALUE m_inspect(VALUE self){
 	len+=strlen(s);
 	s2=malloc(len);
 	sprintf(s2, TEMPLATE, s);
-	free(s);
+	bsdconv_free(s);
 	ret=rb_str_new2(s2);
 	free(s2);
 	return ret;
@@ -218,7 +218,7 @@ static VALUE f_error(VALUE self){
 	VALUE ret;
 	char *s=bsdconv_error();
 	ret=rb_str_new2(s);
-	free(s);
+	bsdconv_free(s);
 	return ret;
 }
 
@@ -230,9 +230,10 @@ static VALUE f_codecs_list(VALUE self, VALUE phase_type){
 	p=list;
 	while(*p!=NULL){
 		rb_ary_push(ret, rb_str_new2(*p));
-		free(*p);
+		bsdconv_free(*p);
 		p+=1;
 	}
+	bsdconv_free(list);
 	return ret;
 }
 
