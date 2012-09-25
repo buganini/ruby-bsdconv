@@ -1,4 +1,10 @@
 #include <ruby.h>
+#ifdef HAVE_RUBY_IO_H		/* Ruby 1.9 and later */
+#include "ruby/io.h"
+#else				/* Ruby 1.8.x */
+#include "rubyio.h"
+#define rb_io_stdio_file(iot)	((iot)->f)
+#endif
 #include <bsdconv.h>
 
 #define IBUFLEN 1024
@@ -11,6 +17,7 @@ static VALUE m_replace_phase(VALUE, VALUE, VALUE, VALUE);
 static VALUE m_replace_codec(VALUE, VALUE, VALUE, VALUE);
 static VALUE m_conv(VALUE, VALUE);
 static VALUE m_init(VALUE);
+static VALUE m_ctl(VALUE, VALUE, VALUE, VALUE);
 static VALUE m_conv_chunk(VALUE, VALUE);
 static VALUE m_conv_chunk_last(VALUE, VALUE);
 static VALUE m_conv_file(VALUE, VALUE, VALUE);
@@ -21,6 +28,9 @@ static VALUE m_inspect(VALUE);
 static VALUE f_error(VALUE);
 static VALUE f_codecs_list(VALUE, VALUE);
 static VALUE f_codec_check(VALUE, VALUE, VALUE);
+static VALUE f_mktemp(VALUE, VALUE);
+
+VALUE Bsdconv_file;
 
 void Init_bsdconv(){
 	VALUE Bsdconv = rb_define_class("Bsdconv", rb_cObject);
@@ -31,6 +41,7 @@ void Init_bsdconv(){
 	rb_define_method(Bsdconv, "replace_codec", m_replace_codec, 3);
 	rb_define_method(Bsdconv, "conv", m_conv, 1);
 	rb_define_method(Bsdconv, "init", m_init, 0);
+	rb_define_method(Bsdconv, "ctl", m_ctl, 3);
 	rb_define_method(Bsdconv, "conv_chunk", m_conv_chunk, 1);
 	rb_define_method(Bsdconv, "conv_chunk_last", m_conv_chunk_last, 1);
 	rb_define_method(Bsdconv, "conv_file", m_conv_file, 2);
@@ -41,9 +52,17 @@ void Init_bsdconv(){
 	rb_define_const(Bsdconv, "INTER", INT2NUM(INTER));
 	rb_define_const(Bsdconv, "TO", INT2NUM(TO));
 
+	rb_define_const(Bsdconv, "CTL_ATTACH_SCORE", INT2NUM(BSDCONV_ATTACH_SCORE));
+	rb_define_const(Bsdconv, "CTL_SET_WIDE_AMBI", INT2NUM(BSDCONV_SET_WIDE_AMBI));
+	rb_define_const(Bsdconv, "CTL_SET_TRIM_WIDTH", INT2NUM(BSDCONV_SET_TRIM_WIDTH));
+	rb_define_const(Bsdconv, "CTL_ATTACH_OUTPUT_FILE", INT2NUM(BSDCONV_ATTACH_OUTPUT_FILE));
+
 	rb_define_singleton_method(Bsdconv, "error", f_error, 0);
 	rb_define_singleton_method(Bsdconv, "codecs_list", f_codecs_list, 1);
 	rb_define_singleton_method(Bsdconv, "codec_check", f_codec_check, 2);
+	rb_define_singleton_method(Bsdconv, "mktemp", f_mktemp, 1);
+
+	Bsdconv_file = rb_define_class("Bsdconv_file", rb_cObject);
 }
 
 static VALUE m_new(VALUE class, VALUE conversion){
@@ -101,6 +120,21 @@ static VALUE m_init(VALUE self){
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
 	bsdconv_init(ins);
+	return Qtrue;
+}
+
+static VALUE m_ctl(VALUE self, VALUE action, VALUE res, VALUE num){
+	struct bsdconv_instance *ins;
+	rb_io_t *fptr = NULL;
+	void *ptr=NULL;
+	Data_Get_Struct(self, struct bsdconv_instance, ins);
+	if(TYPE(res)==T_FILE){
+		GetOpenFile(res, fptr);
+		ptr=rb_io_stdio_file(fptr);
+	}else{
+		Data_Get_Struct(res, FILE, ptr);
+	}
+	bsdconv_ctl(ins, NUM2INT(action), ptr, NUM2INT(num));
 	return Qtrue;
 }
 
@@ -242,4 +276,19 @@ static VALUE f_codec_check(VALUE self, VALUE phase_type, VALUE codec){
 		return Qtrue;
 	}
 	return Qfalse;
+}
+
+static VALUE f_mktemp(VALUE self, VALUE template){
+	char *fn=strdup(RSTRING_PTR(template));
+	int fd=bsdconv_mkstemp(fn);
+	if(fd==-1)
+		return Qfalse;
+	FILE *fp=fdopen(fd, "wb+");
+	VALUE rfp=Data_Wrap_Struct(Bsdconv_file, 0, fclose, fp);
+	VALUE ret;
+	ret=rb_ary_new();
+	rb_ary_push(ret, rfp);
+	rb_ary_push(ret, rb_str_new2(fn));
+	free(fn);
+	return ret;
 }
