@@ -29,6 +29,7 @@ static VALUE f_error(VALUE);
 static VALUE f_codecs_list(VALUE, VALUE);
 static VALUE f_codec_check(VALUE, VALUE, VALUE);
 static VALUE f_mktemp(VALUE, VALUE);
+static VALUE f_fopen(VALUE, VALUE, VALUE);
 
 VALUE Bsdconv_file;
 
@@ -61,6 +62,7 @@ void Init_bsdconv(){
 	rb_define_singleton_method(Bsdconv, "codecs_list", f_codecs_list, 1);
 	rb_define_singleton_method(Bsdconv, "codec_check", f_codec_check, 2);
 	rb_define_singleton_method(Bsdconv, "mktemp", f_mktemp, 1);
+	rb_define_singleton_method(Bsdconv, "fopen", f_fopen, 2);
 
 	Bsdconv_file = rb_define_class("Bsdconv_file", rb_cObject);
 }
@@ -282,7 +284,7 @@ static VALUE f_mktemp(VALUE self, VALUE template){
 	char *fn=strdup(RSTRING_PTR(template));
 	int fd=bsdconv_mkstemp(fn);
 	if(fd==-1)
-		return Qfalse;
+		return Qnil;
 	FILE *fp=fdopen(fd, "wb+");
 	VALUE rfp=Data_Wrap_Struct(Bsdconv_file, 0, fclose, fp);
 	VALUE ret;
@@ -290,5 +292,13 @@ static VALUE f_mktemp(VALUE self, VALUE template){
 	rb_ary_push(ret, rfp);
 	rb_ary_push(ret, rb_str_new2(fn));
 	free(fn);
+	return ret;
+}
+
+static VALUE f_fopen(VALUE self, VALUE filename, VALUE mode){
+	FILE *fp=fopen(RSTRING_PTR(filename), RSTRING_PTR(mode));
+	if(!fp)
+		return Qnil;
+	VALUE ret=Data_Wrap_Struct(Bsdconv_file, 0, fclose, fp);
 	return ret;
 }
