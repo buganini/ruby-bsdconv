@@ -7,6 +7,12 @@
 #endif
 #include <bsdconv.h>
 
+#ifndef WIN32
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
 #define IBUFLEN 1024
 
 void Init_bsdconv();
@@ -194,6 +200,13 @@ static VALUE m_conv_file(VALUE self, VALUE ifile, VALUE ofile){
 		free(tmp);
 		return Qfalse;
 	}
+
+#ifndef WIN32
+	struct stat stat;
+	fstat(fileno(inf), &stat);
+	fchown(fileno(otf), stat.st_uid, stat.st_gid);
+	fchmod(fileno(otf), stat.st_mode);
+#endif
 
 	bsdconv_init(ins);
 	do{
