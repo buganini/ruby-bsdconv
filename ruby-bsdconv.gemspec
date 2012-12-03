@@ -12,8 +12,8 @@ Gem::Specification.new do |s|
   s.files = [
   "README",
   "Rakefile",
-  "example.rb",
-  "example2.rb",
+  "example/example.rb",
+  "example/example2.rb",
   "ext/ruby-bsdconv/bsdconv.c",
   "ext/ruby-bsdconv/extconf.rb",
   "ruby-bsdconv.gemspec",
