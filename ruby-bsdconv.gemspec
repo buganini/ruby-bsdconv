@@ -6,14 +6,16 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Buganini Q"]
-  s.date = "2012-12-02"
+  s.date = "2012-12-03"
   s.description = "ruby wrapper for bsdconv. bsdconv is a BSD licensed charset/encoding converter library with more functionalities than libiconv"
   s.extensions = ["ext/ruby-bsdconv/extconf.rb"]
   s.files = [
+  ".gitignore",
   "README",
   "Rakefile",
   "example/example.rb",
   "example/example2.rb",
+  "example/example3.rb",
   "ext/ruby-bsdconv/bsdconv.c",
   "ext/ruby-bsdconv/extconf.rb",
   "ruby-bsdconv.gemspec",
