@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "ruby-bsdconv"
-  s.version = "0.9.0"
+  s.version = "9.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Buganini Q"]
