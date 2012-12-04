@@ -20,7 +20,7 @@ module Gemgem
   end
 
   def gem_tag
-    "#{spec.name}-#{spec.version}"
+    spec.version.to_s
   end
 
   def write
