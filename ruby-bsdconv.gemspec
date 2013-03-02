@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = "ruby-bsdconv"
-  s.version = "9.1"
+  s.version = "9.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Buganini Q"]
-  s.date = "2012-12-03"
+  s.date = "2013-03-02"
   s.description = "ruby wrapper for bsdconv. bsdconv is a BSD licensed charset/encoding converter library with more functionalities than libiconv"
   s.extensions = ["ext/ruby-bsdconv/extconf.rb"]
   s.files = [
@@ -19,18 +19,11 @@ Gem::Specification.new do |s|
   "ext/ruby-bsdconv/bsdconv.c",
   "ext/ruby-bsdconv/extconf.rb",
   "ruby-bsdconv.gemspec",
-  "task/gemgem.rb"]
+  "task/gemgem.rb",
+  "test/test_basic.rb"]
   s.homepage = "https://github.com/buganini/ruby-bsdconv"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.23"
+  s.rubygems_version = "2.0.0"
   s.summary = "ruby wrapper for bsdconv"
-
-  if s.respond_to? :specification_version then
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-    else
-    end
-  else
-  end
+  s.test_files = ["test/test_basic.rb"]
 end
