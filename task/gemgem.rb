@@ -23,6 +23,10 @@ module Gemgem
     spec.version.to_s
   end
 
+  def gem_filename
+    "#{spec.name}-#{spec.version}.gem"
+  end
+
   def write
     File.open("#{dir}/#{spec.name}.gemspec", 'w'){ |f|
       f << split_lines(spec.to_ruby) }
@@ -104,14 +108,14 @@ namespace :gem do
 
 desc 'Install gem'
 task :install => [:build] do
-  sh("#{Gem.ruby} -S gem install pkg/#{Gemgem.gem_tag}")
+  sh("#{Gem.ruby} -S gem install pkg/#{Gemgem.gem_filename}")
 end
 
 desc 'Build gem'
 task :build => [:spec] do
   sh("#{Gem.ruby} -S gem build #{Gemgem.spec.name}.gemspec")
   sh("mkdir -p pkg")
-  sh("mv #{Gemgem.gem_tag}.gem pkg/")
+  sh("mv #{Gemgem.gem_filename} pkg/")
 end
 
 desc 'Release gem'
@@ -119,7 +123,7 @@ task :release => [:spec, :check, :build] do
   sh("git tag #{Gemgem.gem_tag}")
   sh("git push")
   sh("git push --tags")
-  sh("#{Gem.ruby} -S gem push pkg/#{Gemgem.gem_tag}.gem")
+  sh("#{Gem.ruby} -S gem push pkg/#{Gemgem.gem_filename}")
 end
 
 task :check do
@@ -142,21 +146,9 @@ end # of gem namespace
 
 desc 'Run tests in memory'
 task :test do
-  require 'bacon'
-  Bacon.extend(Bacon::TestUnitOutput)
-  Bacon.summary_on_exit
   $LOAD_PATH.unshift('lib')
   Dir['./test/**/test_*.rb'].each{ |file| require file[0..-4] }
-end
-
-desc 'Run tests with shell'
-task 'test:shell', :RUBY_OPTS do |t, args|
-  files = Dir['test/**/test_*.rb'].join(' ')
-
-  cmd = [Gem.ruby, args[:RUBY_OPTS],
-         '-I', 'lib', '-S', 'bacon', '--quiet', files]
-
-  sh(cmd.compact.join(' '))
+  Test::Unit::Runner.autorun
 end
 
 task :default do
