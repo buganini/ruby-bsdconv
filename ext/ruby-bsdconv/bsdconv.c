@@ -17,10 +17,6 @@
 
 void Init_bsdconv();
 static VALUE m_new(VALUE, VALUE);
-static VALUE m_insert_phase(VALUE, VALUE, VALUE, VALUE);
-static VALUE m_insert_codec(VALUE, VALUE, VALUE, VALUE);
-static VALUE m_replace_phase(VALUE, VALUE, VALUE, VALUE);
-static VALUE m_replace_codec(VALUE, VALUE, VALUE, VALUE);
 static VALUE m_conv(VALUE, VALUE);
 static VALUE m_init(VALUE);
 static VALUE m_ctl(VALUE, VALUE, VALUE, VALUE);
@@ -31,6 +27,10 @@ static VALUE m_info(VALUE);
 static VALUE m_nil(VALUE);
 static VALUE m_inspect(VALUE);
 
+static VALUE f_insert_phase(VALUE, VALUE, VALUE, VALUE, VALUE);
+static VALUE f_insert_codec(VALUE, VALUE, VALUE, VALUE, VALUE);
+static VALUE f_replace_phase(VALUE, VALUE, VALUE, VALUE, VALUE);
+static VALUE f_replace_codec(VALUE, VALUE, VALUE, VALUE, VALUE);
 static VALUE f_error(VALUE);
 static VALUE f_codecs_list(VALUE, VALUE);
 static VALUE f_codec_check(VALUE, VALUE, VALUE);
@@ -42,10 +42,6 @@ VALUE Bsdconv_file;
 void Init_bsdconv(){
 	VALUE Bsdconv = rb_define_class("Bsdconv", rb_cObject);
 	rb_define_singleton_method(Bsdconv, "new", m_new, 1);
-	rb_define_method(Bsdconv, "insert_phase", m_insert_phase, 3);
-	rb_define_method(Bsdconv, "insert_codec", m_insert_codec, 3);
-	rb_define_method(Bsdconv, "replace_phase", m_replace_phase, 3);
-	rb_define_method(Bsdconv, "replace_codec", m_replace_codec, 3);
 	rb_define_method(Bsdconv, "conv", m_conv, 1);
 	rb_define_method(Bsdconv, "init", m_init, 0);
 	rb_define_method(Bsdconv, "ctl", m_ctl, 3);
@@ -64,6 +60,10 @@ void Init_bsdconv(){
 	rb_define_const(Bsdconv, "CTL_SET_TRIM_WIDTH", INT2NUM(BSDCONV_SET_TRIM_WIDTH));
 	rb_define_const(Bsdconv, "CTL_ATTACH_OUTPUT_FILE", INT2NUM(BSDCONV_ATTACH_OUTPUT_FILE));
 
+	rb_define_singleton_method(Bsdconv, "insert_phase", f_insert_phase, 4);
+	rb_define_singleton_method(Bsdconv, "insert_codec", f_insert_codec, 4);
+	rb_define_singleton_method(Bsdconv, "replace_phase", f_replace_phase, 4);
+	rb_define_singleton_method(Bsdconv, "replace_codec", f_replace_codec, 4);
 	rb_define_singleton_method(Bsdconv, "error", f_error, 0);
 	rb_define_singleton_method(Bsdconv, "codecs_list", f_codecs_list, 1);
 	rb_define_singleton_method(Bsdconv, "codec_check", f_codec_check, 2);
@@ -82,30 +82,6 @@ static VALUE m_new(VALUE class, VALUE conversion){
 	if(ins==NULL)
 		return Qnil;
 	return Data_Wrap_Struct(class, 0, bsdconv_destroy, ins);
-}
-
-static VALUE m_insert_phase(VALUE self, VALUE conversion, VALUE phase_type, VALUE phasen){
-	struct bsdconv_instance *ins;
-	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	return INT2NUM(bsdconv_insert_phase(ins, RSTRING_PTR(conversion), NUM2INT(phase_type), NUM2INT(phasen)));
-}
-
-static VALUE m_insert_codec(VALUE self, VALUE conversion, VALUE phasen, VALUE codecn){
-	struct bsdconv_instance *ins;
-	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	return INT2NUM(bsdconv_insert_phase(ins, RSTRING_PTR(conversion), NUM2INT(phasen), NUM2INT(codecn)));
-}
-
-static VALUE m_replace_phase(VALUE self, VALUE conversion, VALUE phase_type, VALUE phasen){
-	struct bsdconv_instance *ins;
-	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	return INT2NUM(bsdconv_insert_phase(ins, RSTRING_PTR(conversion), NUM2INT(phase_type), NUM2INT(phasen)));
-}
-
-static VALUE m_replace_codec(VALUE self, VALUE conversion, VALUE phasen, VALUE codecn){
-	struct bsdconv_instance *ins;
-	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	return INT2NUM(bsdconv_insert_phase(ins, RSTRING_PTR(conversion), NUM2INT(phasen), NUM2INT(codecn)));
 }
 
 static VALUE m_conv(VALUE self, VALUE str){
@@ -261,6 +237,26 @@ static VALUE m_inspect(VALUE self){
 	ret=rb_str_new2(s2);
 	free(s2);
 	return ret;
+}
+
+static VALUE f_insert_phase(VALUE self, VALUE conversion, VALUE codec, VALUE phase_type, VALUE phasen){
+	char *s=bsdconv_insert_phase(RSTRING_PTR(conversion), RSTRING_PTR(codec), NUM2INT(phase_type), NUM2INT(phasen));
+	return rb_str_new2(s);
+}
+
+static VALUE f_insert_codec(VALUE self, VALUE conversion, VALUE codec, VALUE phasen, VALUE codecn){
+	char *s=bsdconv_insert_codec(RSTRING_PTR(conversion), RSTRING_PTR(codec), NUM2INT(phasen), NUM2INT(codecn));
+	return rb_str_new2(s);
+}
+
+static VALUE f_replace_phase(VALUE self, VALUE conversion, VALUE codec, VALUE phase_type, VALUE phasen){
+	char *s=bsdconv_replace_phase(RSTRING_PTR(conversion), RSTRING_PTR(codec), NUM2INT(phase_type), NUM2INT(phasen));
+	return rb_str_new2(s);
+}
+
+static VALUE f_replace_codec(VALUE self, VALUE conversion, VALUE codec, VALUE phasen, VALUE codecn){
+	char *s=bsdconv_replace_codec(RSTRING_PTR(conversion), RSTRING_PTR(codec), NUM2INT(phasen), NUM2INT(codecn));
+	return rb_str_new2(s);
 }
 
 static VALUE f_error(VALUE self){
