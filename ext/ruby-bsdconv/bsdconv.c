@@ -23,7 +23,8 @@ static VALUE m_ctl(VALUE, VALUE, VALUE, VALUE);
 static VALUE m_conv_chunk(VALUE, VALUE);
 static VALUE m_conv_chunk_last(VALUE, VALUE);
 static VALUE m_conv_file(VALUE, VALUE, VALUE);
-static VALUE m_info(VALUE);
+static VALUE m_counter(int, VALUE *, VALUE);
+static VALUE m_counter_reset(VALUE);
 static VALUE m_nil(VALUE);
 static VALUE m_inspect(VALUE);
 
@@ -48,7 +49,8 @@ void Init_bsdconv(){
 	rb_define_method(Bsdconv, "conv_chunk", m_conv_chunk, 1);
 	rb_define_method(Bsdconv, "conv_chunk_last", m_conv_chunk_last, 1);
 	rb_define_method(Bsdconv, "conv_file", m_conv_file, 2);
-	rb_define_method(Bsdconv, "info", m_info, 0);
+	rb_define_method(Bsdconv, "counter", m_counter, -1);
+	rb_define_method(Bsdconv, "counter_reset", m_counter_reset, 0);
 	rb_define_method(Bsdconv, "inspect", m_inspect, 0);
 
 	rb_define_const(Bsdconv, "FROM", INT2NUM(FROM));
@@ -207,18 +209,30 @@ static VALUE m_conv_file(VALUE self, VALUE ifile, VALUE ofile){
 	return Qtrue;
 }
 
-static VALUE m_info(VALUE self){
+static VALUE m_counter(int argc, VALUE *argv, VALUE self){
+	char *key=NULL;
+	struct bsdconv_instance *ins;
+	Data_Get_Struct(self, struct bsdconv_instance, ins);
+	if(argc!=0){
+		bsdconv_counter_t *v=bsdconv_counter(ins, RSTRING_PTR(argv[0]));
+		return INT2NUM(*v);
+	}else{
+		VALUE ret=rb_hash_new();
+		struct bsdconv_counter_entry *p=ins->counter;
+		while(p){
+			rb_hash_aset(ret, rb_str_new2(p->key), INT2FIX(p->val));
+			p=p->next;
+		}
+		return ret;
+	}
+}
+
+static VALUE m_counter_reset(VALUE self){
 	VALUE ret;
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	ret=rb_hash_new();
-	rb_hash_aset(ret, rb_str_new2("ierr"), INT2FIX(ins->ierr));
-	rb_hash_aset(ret, rb_str_new2("oerr"), INT2FIX(ins->oerr));
-	rb_hash_aset(ret, rb_str_new2("score"), rb_float_new(ins->score));
-	rb_hash_aset(ret, rb_str_new2("full"), INT2FIX(ins->full));
-	rb_hash_aset(ret, rb_str_new2("half"), INT2FIX(ins->half));
-	rb_hash_aset(ret, rb_str_new2("ambi"), INT2FIX(ins->ambi));
-	return ret;
+	bsdconv_counter_reset(ins);
+	return Qtrue;
 }
 
 static VALUE m_inspect(VALUE self){

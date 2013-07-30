@@ -14,4 +14,4 @@ while $stdin.gets
 end
 puts c.conv_chunk_last('')
 
-p c.info
+p c.counter
