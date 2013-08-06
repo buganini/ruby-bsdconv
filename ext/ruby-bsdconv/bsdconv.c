@@ -39,7 +39,7 @@ static VALUE m_conv_chunk(VALUE, VALUE);
 static VALUE m_conv_chunk_last(VALUE, VALUE);
 static VALUE m_conv_file(VALUE, VALUE, VALUE);
 static VALUE m_counter(int, VALUE *, VALUE);
-static VALUE m_counter_reset(VALUE);
+static VALUE m_counter_reset(int, VALUE *, VALUE);
 static VALUE m_nil(VALUE);
 static VALUE m_inspect(VALUE);
 
@@ -65,7 +65,7 @@ void Init_bsdconv(){
 	rb_define_method(Bsdconv, "conv_chunk_last", m_conv_chunk_last, 1);
 	rb_define_method(Bsdconv, "conv_file", m_conv_file, 2);
 	rb_define_method(Bsdconv, "counter", m_counter, -1);
-	rb_define_method(Bsdconv, "counter_reset", m_counter_reset, 0);
+	rb_define_method(Bsdconv, "counter_reset", m_counter_reset, -1);
 	rb_define_method(Bsdconv, "inspect", m_inspect, 0);
 
 	rb_define_const(Bsdconv, "FROM", INT2NUM(FROM));
@@ -225,7 +225,6 @@ static VALUE m_conv_file(VALUE self, VALUE ifile, VALUE ofile){
 }
 
 static VALUE m_counter(int argc, VALUE *argv, VALUE self){
-	char *key=NULL;
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
 	if(argc!=0){
@@ -242,11 +241,15 @@ static VALUE m_counter(int argc, VALUE *argv, VALUE self){
 	}
 }
 
-static VALUE m_counter_reset(VALUE self){
+static VALUE m_counter_reset(int argc, VALUE *argv, VALUE self){
 	VALUE ret;
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
-	bsdconv_counter_reset(ins);
+	if(argc!=0){
+		bsdconv_counter_reset(ins, RSTRING_PTR(argv[0]));
+	}else{
+		bsdconv_counter_reset(ins, NULL);
+	}
 	return Qtrue;
 }
 
