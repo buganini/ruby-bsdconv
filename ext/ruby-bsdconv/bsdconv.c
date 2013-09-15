@@ -110,6 +110,7 @@ static VALUE m_conv(VALUE self, VALUE str){
 	ins->input.data=RSTRING_PTR(str);
 	ins->input.len=RSTRING_LEN(str);
 	ins->input.flags=0;
+	ins->input.next=NULL;
 	ins->flush=1;
 	bsdconv(ins);
 	ret=rb_str_new(ins->output.data, ins->output.len);
@@ -147,6 +148,7 @@ static VALUE m_conv_chunk(VALUE self, VALUE str){
 	ins->input.data=RSTRING_PTR(str);
 	ins->input.len=RSTRING_LEN(str);
 	ins->input.flags=0;
+	ins->input.next=NULL;
 	bsdconv(ins);
 	ret=rb_str_new(ins->output.data, ins->output.len);
 	bsdconv_free(ins->output.data);
@@ -161,6 +163,7 @@ static VALUE m_conv_chunk_last(VALUE self, VALUE str){
 	ins->input.data=RSTRING_PTR(str);
 	ins->input.len=RSTRING_LEN(str);
 	ins->input.flags=0;
+	ins->input.next=NULL;
 	bsdconv(ins);
 	ret=rb_str_new(ins->output.data, ins->output.len);
 	bsdconv_free(ins->output.data);
@@ -207,6 +210,7 @@ static VALUE m_conv_file(VALUE self, VALUE ifile, VALUE ofile){
 		ins->input.data=in;
 		ins->input.len=fread(in, 1, IBUFLEN, inf);
 		ins->input.flags|=F_FREE;
+		ins->input.next=NULL;
 		if(ins->input.len==0){
 			ins->flush=1;
 		}
