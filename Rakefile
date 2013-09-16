@@ -12,7 +12,9 @@ task 'gem:spec' do
     s.version = '11.1.0'
     s.extensions  = 'ext/ruby-bsdconv/extconf.rb'
     s.authors     = ['Buganini Q']
+    s.email       = 'buganini@gmail.com'
     s.homepage    = 'https://github.com/buganini/ruby-bsdconv'
+    s.license     = 'BSD'
     s.summary     = 'ruby wrapper for bsdconv'
     s.description =
       "#{s.summary}. bsdconv is a BSD licensed charset/encoding converter" \
