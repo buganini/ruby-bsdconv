@@ -9,7 +9,7 @@ desc 'Generate gemspec'
 task 'gem:spec' do
   Gemgem.spec = Gemgem.create do |s|
     s.name    = 'ruby-bsdconv'
-    s.version = '11.0.0'
+    s.version = '11.1.0'
     s.extensions  = 'ext/ruby-bsdconv/extconf.rb'
     s.authors     = ['Buganini Q']
     s.homepage    = 'https://github.com/buganini/ruby-bsdconv'
