@@ -5,7 +5,7 @@ require 'bsdconv'
 score,path=Bsdconv::mktemp("score.XXXXXX")
 list=open("characters_list.txt","w+")
 
-c=Bsdconv.new('utf-8:score_train:null')
+c=Bsdconv.new('utf-8:score-train:null')
 c.init
 
 c.ctl(Bsdconv::CTL_ATTACH_SCORE, score, 0);
