@@ -10,4 +10,5 @@ end
 
 c.conv_file(ARGV[1], ARGV[2])
 
+p c
 p c.counter
