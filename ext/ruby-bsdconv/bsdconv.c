@@ -245,7 +245,6 @@ static VALUE m_counter(int argc, VALUE *argv, VALUE self){
 }
 
 static VALUE m_counter_reset(int argc, VALUE *argv, VALUE self){
-	VALUE ret;
 	struct bsdconv_instance *ins;
 	Data_Get_Struct(self, struct bsdconv_instance, ins);
 	if(argc!=0){
@@ -276,28 +275,28 @@ static VALUE m_inspect(VALUE self){
 
 static VALUE f_insert_phase(VALUE self, VALUE conversion, VALUE codec, VALUE phase_type, VALUE phasen){
 	char *s=bsdconv_insert_phase(RSTRING_PTR(conversion), RSTRING_PTR(codec), NUM2INT(phase_type), NUM2INT(phasen));
-	char *ret=rb_str_new2(s);
+	VALUE ret=rb_str_new2(s);
 	bsdconv_free(s);
 	return ret;
 }
 
 static VALUE f_insert_codec(VALUE self, VALUE conversion, VALUE codec, VALUE phasen, VALUE codecn){
 	char *s=bsdconv_insert_codec(RSTRING_PTR(conversion), RSTRING_PTR(codec), NUM2INT(phasen), NUM2INT(codecn));
-	char *ret=rb_str_new2(s);
+	VALUE ret=rb_str_new2(s);
 	bsdconv_free(s);
 	return ret;
 }
 
 static VALUE f_replace_phase(VALUE self, VALUE conversion, VALUE codec, VALUE phase_type, VALUE phasen){
 	char *s=bsdconv_replace_phase(RSTRING_PTR(conversion), RSTRING_PTR(codec), NUM2INT(phase_type), NUM2INT(phasen));
-	char *ret=rb_str_new2(s);
+	VALUE ret=rb_str_new2(s);
 	bsdconv_free(s);
 	return ret;
 }
 
 static VALUE f_replace_codec(VALUE self, VALUE conversion, VALUE codec, VALUE phasen, VALUE codecn){
 	char *s=bsdconv_replace_codec(RSTRING_PTR(conversion), RSTRING_PTR(codec), NUM2INT(phasen), NUM2INT(codecn));
-	char *ret=rb_str_new2(s);
+	VALUE ret=rb_str_new2(s);
 	bsdconv_free(s);
 	return ret;
 }
