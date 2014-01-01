@@ -40,7 +40,6 @@ static VALUE m_conv_chunk_last(VALUE, VALUE);
 static VALUE m_conv_file(VALUE, VALUE, VALUE);
 static VALUE m_counter(int, VALUE *, VALUE);
 static VALUE m_counter_reset(int, VALUE *, VALUE);
-static VALUE m_nil(VALUE);
 static VALUE m_inspect(VALUE);
 
 static VALUE f_insert_phase(VALUE, VALUE, VALUE, VALUE, VALUE);
