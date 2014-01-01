@@ -71,10 +71,9 @@ void Init_bsdconv(){
 	rb_define_const(Bsdconv, "INTER", INT2NUM(INTER));
 	rb_define_const(Bsdconv, "TO", INT2NUM(TO));
 
-	rb_define_const(Bsdconv, "CTL_ATTACH_SCORE", INT2NUM(BSDCONV_ATTACH_SCORE));
-	rb_define_const(Bsdconv, "CTL_SET_WIDE_AMBI", INT2NUM(BSDCONV_SET_WIDE_AMBI));
-	rb_define_const(Bsdconv, "CTL_SET_TRIM_WIDTH", INT2NUM(BSDCONV_SET_TRIM_WIDTH));
-	rb_define_const(Bsdconv, "CTL_ATTACH_OUTPUT_FILE", INT2NUM(BSDCONV_ATTACH_OUTPUT_FILE));
+	rb_define_const(Bsdconv, "CTL_ATTACH_SCORE", INT2NUM(BSDCONV_CTL_ATTACH_SCORE));
+	rb_define_const(Bsdconv, "CTL_ATTACH_OUTPUT_FILE", INT2NUM(BSDCONV_CTL_ATTACH_OUTPUT_FILE));
+	rb_define_const(Bsdconv, "CTL_AMBIGUOUS_PAD", INT2NUM(BSDCONV_CTL_AMBIGUOUS_PAD));
 
 	rb_define_singleton_method(Bsdconv, "insert_phase", f_insert_phase, 4);
 	rb_define_singleton_method(Bsdconv, "insert_codec", f_insert_codec, 4);
