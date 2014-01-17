@@ -67,6 +67,7 @@ void Init_bsdconv(){
 	rb_define_method(Bsdconv, "counter_reset", m_counter_reset, -1);
 	rb_define_method(Bsdconv, "inspect", m_inspect, 0);
 
+	rb_define_const(Bsdconv, "FILTER", INT2NUM(FILTER));
 	rb_define_const(Bsdconv, "FROM", INT2NUM(FROM));
 	rb_define_const(Bsdconv, "INTER", INT2NUM(INTER));
 	rb_define_const(Bsdconv, "TO", INT2NUM(TO));
