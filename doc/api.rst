@@ -5,6 +5,7 @@ Ruby binding API
 
 .. rb:class:: Bsdconv
 
+	.. rb:const:: FILTER
 	.. rb:const:: FROM
 	.. rb:const:: INTER
 	.. rb:const:: TO
@@ -41,13 +42,13 @@ Ruby binding API
 
 		Get error message
 
-	.. rb:classmethod:: codecs_list(phase_type)
+	.. rb:classmethod:: modules_list(type)
 
-		Get codecs list
+		Get modules list of specified type
 
-	.. rb:classmethod:: codec_check(phase_type, codec)
+	.. rb:classmethod:: module_check(type, module)
 
-		Check codec availability with given phase type and codec name
+		Check availability with given type and module name
 
 	.. rb:classmethod:: mktemp(template)
 
