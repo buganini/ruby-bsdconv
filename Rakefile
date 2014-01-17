@@ -4,7 +4,7 @@ require "#{dir = File.dirname(__FILE__)}/task/gemgem"
 
 Gemgem.init(dir) do |s|
   s.name        = 'ruby-bsdconv'
-  s.version     = '11.1.0'
+  s.version     = '11.2.0'
   s.extensions  = 'ext/ruby-bsdconv/extconf.rb'
   s.authors     = ['Buganini Q']
   s.email       = 'buganini@gmail.com'
