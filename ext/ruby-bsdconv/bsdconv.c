@@ -47,8 +47,8 @@ static VALUE f_insert_codec(VALUE, VALUE, VALUE, VALUE, VALUE);
 static VALUE f_replace_phase(VALUE, VALUE, VALUE, VALUE, VALUE);
 static VALUE f_replace_codec(VALUE, VALUE, VALUE, VALUE, VALUE);
 static VALUE f_error(VALUE);
-static VALUE f_codecs_list(VALUE, VALUE);
-static VALUE f_codec_check(VALUE, VALUE, VALUE);
+static VALUE f_modules_list(VALUE, VALUE);
+static VALUE f_module_check(VALUE, VALUE, VALUE);
 static VALUE f_mktemp(VALUE, VALUE);
 static VALUE f_fopen(VALUE, VALUE, VALUE);
 
@@ -81,8 +81,8 @@ void Init_bsdconv(){
 	rb_define_singleton_method(Bsdconv, "replace_phase", f_replace_phase, 4);
 	rb_define_singleton_method(Bsdconv, "replace_codec", f_replace_codec, 4);
 	rb_define_singleton_method(Bsdconv, "error", f_error, 0);
-	rb_define_singleton_method(Bsdconv, "codecs_list", f_codecs_list, 1);
-	rb_define_singleton_method(Bsdconv, "codec_check", f_codec_check, 2);
+	rb_define_singleton_method(Bsdconv, "modules_list", f_modules_list, 1);
+	rb_define_singleton_method(Bsdconv, "module_check", f_module_check, 2);
 	rb_define_singleton_method(Bsdconv, "mktemp", f_mktemp, 1);
 	rb_define_singleton_method(Bsdconv, "fopen", f_fopen, 2);
 
@@ -309,11 +309,11 @@ static VALUE f_error(VALUE self){
 	return ret;
 }
 
-static VALUE f_codecs_list(VALUE self, VALUE phase_type){
+static VALUE f_modules_list(VALUE self, VALUE phase_type){
 	char **list, **p;
 	VALUE ret;
 	ret=rb_ary_new();
-	list=bsdconv_codecs_list(NUM2INT(phase_type));
+	list=bsdconv_modules_list(NUM2INT(phase_type));
 	p=list;
 	while(*p!=NULL){
 		rb_ary_push(ret, rb_str_new2(*p));
@@ -324,8 +324,8 @@ static VALUE f_codecs_list(VALUE self, VALUE phase_type){
 	return ret;
 }
 
-static VALUE f_codec_check(VALUE self, VALUE phase_type, VALUE codec){
-	if(bsdconv_codec_check(NUM2INT(phase_type), RSTRING_PTR(codec))){
+static VALUE f_module_check(VALUE self, VALUE phase_type, VALUE codec){
+	if(bsdconv_module_check(NUM2INT(phase_type), RSTRING_PTR(codec))){
 		return Qtrue;
 	}
 	return Qfalse;
