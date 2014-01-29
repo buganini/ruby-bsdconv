@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = "ruby-bsdconv"
-  s.version = "11.2.0"
+  s.version = "11.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Buganini Q"]
-  s.date = "2014-01-18"
+  s.date = "2014-01-29"
   s.description = "ruby wrapper for bsdconv. bsdconv is a BSD licensed charset/encoding converter library with more functionalities than libiconv"
   s.email = "buganini@gmail.com"
   s.extensions = ["ext/ruby-bsdconv/extconf.rb"]

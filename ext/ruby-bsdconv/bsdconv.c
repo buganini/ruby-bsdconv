@@ -83,6 +83,8 @@ void Init_bsdconv(){
 	rb_define_singleton_method(Bsdconv, "error", f_error, 0);
 	rb_define_singleton_method(Bsdconv, "modules_list", f_modules_list, 1);
 	rb_define_singleton_method(Bsdconv, "module_check", f_module_check, 2);
+	rb_define_singleton_method(Bsdconv, "codecs_list", f_modules_list, 1);
+	rb_define_singleton_method(Bsdconv, "codec_check", f_module_check, 2);
 	rb_define_singleton_method(Bsdconv, "mktemp", f_mktemp, 1);
 	rb_define_singleton_method(Bsdconv, "fopen", f_fopen, 2);
 
