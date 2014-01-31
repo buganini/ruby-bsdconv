@@ -42,9 +42,17 @@ Ruby binding API
 
 		Get error message
 
+	.. rb:classmethod:: codecs_list(type)
+
+		DEPRECATED: Use :rb:meth:`modules_list` instead
+
 	.. rb:classmethod:: modules_list(type)
 
 		Get modules list of specified type
+
+	.. rb:classmethod:: codec_check(type, module)
+
+		DEPRECATED: Use :rb:meth:`module_check` instead
 
 	.. rb:classmethod:: module_check(type, module)
 
