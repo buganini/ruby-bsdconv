@@ -6,7 +6,7 @@ module Gemgem
 
   module_function
   def gem_tag    ; spec.version.to_s                  ; end
-  def gem_path   ; "#{pkg_dir}/#{gem_tag}.gem"        ; end
+  def gem_path   ; "#{pkg_dir}/#{spec.name}-#{gem_tag}.gem"; end
   def spec_path  ; "#{dir}/#{spec.name}.gemspec"      ; end
   def pkg_dir    ; "#{dir}/pkg"                       ; end
   def escaped_dir; @escaped_dir ||= Regexp.escape(dir); end
