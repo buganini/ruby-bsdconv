@@ -117,20 +117,18 @@ module Gemgem
   end
 
   def ignored_pattern
-    @ignored_pattern ||= Regexp.new(expand_patterns(gitignore).join('|'))
+    @ignored_pattern ||= if gitignore.empty?
+                           /^$/
+                         else
+                           Regexp.new(expand_patterns(gitignore).join('|'))
+                         end
   end
 
   def expand_patterns pathes
     # http://git-scm.com/docs/gitignore
     pathes.flat_map{ |path|
-      case path
-      when %r{\*}
-        Regexp.escape(path).gsub(/\\\*/, '[^/]*')
-      when %r{^/}
-        "^#{Regexp.escape(path[1..-1])}"
-      else
-        Regexp.escape(path)
-      end
+      # we didn't implement negative pattern for now
+      Regexp.escape(path).sub(%r{^/}, '^').gsub(/\\\*/, '[^/]*')
     }
   end
 
@@ -176,7 +174,7 @@ task :release => [:spec, :check, :build] do
   Gemgem.module_eval do
     sh_git('tag', Gemgem.gem_tag)
     sh_git('push')
-    sh_git('push --tags')
+    sh_git('push', '--tags')
     sh_gem('push', Gemgem.gem_path)
   end
 end
@@ -207,7 +205,7 @@ task :test do
   Test::Unit::Runner.autorun
 end
 
-desc 'Remove ignored files'
+desc 'Trash ignored files'
 task :clean => ['gem:spec'] do
   next if Gemgem.ignored_files.empty?
 
