@@ -5,7 +5,7 @@ module Gemgem
   end
 
   module_function
-  def gem_tag    ; "#{spec.name}-#{spec.version}"     ; end
+  def gem_tag    ; spec.version.to_s                  ; end
   def gem_path   ; "#{pkg_dir}/#{gem_tag}.gem"        ; end
   def spec_path  ; "#{dir}/#{spec.name}.gemspec"      ; end
   def pkg_dir    ; "#{dir}/pkg"                       ; end
