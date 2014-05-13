@@ -12,18 +12,18 @@ class TestBasic < Test::Unit::TestCase
 
     sin="utf-8:utf-8,ascii"
     sout=Bsdconv.insert_phase(sin, "upper", Bsdconv::INTER, 1)
-    assert_equal "UTF-8:UPPER:UTF-8,ASCII", sout
+    assert_equal "utf-8:upper:utf-8,ascii", sout
 
     sin=sout
     sout=Bsdconv.replace_phase(sin, "full", Bsdconv::INTER, 1)
-    assert_equal "UTF-8:FULL:UTF-8,ASCII", sout
+    assert_equal "utf-8:full:utf-8,ascii", sout
 
     sin=sout
     sout=Bsdconv.replace_codec(sin, "big5", 2, 1)
-    assert_equal "UTF-8:FULL:UTF-8,BIG5", sout
+    assert_equal "utf-8:full:utf-8,big5", sout
 
     sin=sout
     sout=Bsdconv.insert_codec(sin, "ascii", 0, 1)
-    assert_equal "UTF-8,ASCII:FULL:UTF-8,BIG5", sout
+    assert_equal "utf-8,ascii:full:utf-8,big5", sout
   end
 end
