@@ -174,6 +174,7 @@ static VALUE m_conv_chunk_last(VALUE self, VALUE str){
 	ins->input.len=RSTRING_LEN(str);
 	ins->input.flags=0;
 	ins->input.next=NULL;
+	ins->flush=1;
 	bsdconv(ins);
 	ret=rb_str_new(ins->output.data, ins->output.len);
 	bsdconv_free(ins->output.data);
